@@ -1,0 +1,8 @@
+.vscode
+.gitattributes
+.gitignore
+.oxlintrc.json
+.prettierignore
+.prettierrc.yaml
+src
+tsconfig.json

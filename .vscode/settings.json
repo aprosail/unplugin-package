@@ -11,11 +11,20 @@
 
   // File nesting patterns (enable as you wish).
   "explorer.fileNesting.patterns": {
+    "*.js": "",
     "package.json": "pnpm-lock.yaml",
     "readme.md": "license"
   },
 
   // Code spell checker (require recommended extensions).
   "cSpell.ignorePaths": ["node_modules", "out", "LICENSE"],
-  "cSpell.words": ["esbenp", "oxlint", "unplugin"]
+  "cSpell.words": [
+    "esbenp",
+    "nodenext",
+    "oxlint",
+    "oxlintrc",
+    "rolldown",
+    "rspack",
+    "unplugin"
+  ]
 }
