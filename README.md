@@ -30,4 +30,5 @@ unpluginPackage.farm() // as farm plugin.
 
 ## License
 
-This package is released under the MIT License.
+This package is released under [the MIT License](./LICENSE)
+or [Mulan PSL v2](./LICENSE-mulan).

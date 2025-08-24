@@ -1,3 +1,8 @@
+## 1.2.1 (2025-08-24)
+
+- Allow dual-license of MIT or Mulan-PSL 2.0.
+- Fix avoid unnecessary files in package output.
+
 ## 1.2.0 (2025-08-24)
 
 - Avoid unnecessary named export of unplugin entrypoint.
