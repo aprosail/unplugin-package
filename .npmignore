@@ -6,4 +6,5 @@
 .prettierrc.yaml
 example
 src
+pnpm-workspace.yaml
 tsconfig.json

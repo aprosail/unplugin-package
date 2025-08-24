@@ -1,6 +1,10 @@
 # Unplugin Package
 
 Bundler plugins for copying manifest files into output.
+This plugin can help you to copy only necessary files into
+the output directory, and override some fields of `package.json` in the output.
+Those functions are useful when publishing a package to registries like NPM,
+or bundling extension packs such as VSCode extensions.
 
 ## Usages
 
