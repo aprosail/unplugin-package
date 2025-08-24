@@ -23,6 +23,28 @@ unpluginPackage.esbuild() // 作为esbuild插件使用
 unpluginPackage.farm() // 作为farm插件使用
 ```
 
+## 举例说明
+
+```ts
+import { join } from "node:path"
+
+const root = import.meta.dirname
+const outdir = join(root, "out")
+
+// 将这里的xxx替换为具体的bundler名称，如vite、rollup、rolldown等。
+unpluginPackage.xxx({
+  root,
+  outdir,
+  emptyOutdir: true,
+  copyFiles: [...defaultFilesToCopy, "addition-file", "not-exist-file"],
+  manifestOverride(raw) {
+    const manifest = defaultManifestOverride(raw)
+    manifest["homepage"] = "https://yourproject.example.com/xxx"
+    return manifest
+  },
+})
+```
+
 ## 开源协议
 
 本库以[MIT许可证](./LICENSE)或[木兰宽松许可证](./LICENSE-mulan)开源。

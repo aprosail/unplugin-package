@@ -17,24 +17,28 @@
   ],
   "exports": {
     ".": {
-      "import": "./out/index.js",
-      "types": "./out/index.d.ts"
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "types": "./index.d.ts"
     }
   },
   "scripts": {
     "format": "prettier --write .",
     "review": "prettier --check . && oxlint",
-    "build": "tsc --project tsconfig.json",
-    "build:example": "cd example && pnpm build && cd .."
+    "build": "rolldown --config rolldown.config.ts",
+    "prepublish": "npm run build",
+    "publish": "cd out && npm publish && cd .."
   },
   "dependencies": {
     "unplugin": "^2"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.52.11",
     "@types/node": "^24",
     "oxlint": "^1",
     "prettier": "^3",
     "prettier-plugin-sh": "^0.18.0",
-    "typescript": "^5"
+    "rolldown": "^1.0.0-beta.33",
+    "unplugin-dts": "^1.0.0-beta.6"
   }
 }
