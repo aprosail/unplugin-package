@@ -28,7 +28,9 @@ import { createUnplugin } from "unplugin"
 
 const name = "unplugin-package"
 const dim = (raw: string) => `\x1b[2m${raw}\x1b[22m`
+const red = (raw: string) => `\x1b[31m${raw}\x1b[39m`
 const green = (raw: string) => `\x1b[32m${raw}\x1b[39m`
+const yellow = (raw: string) => `\x1b[33m${raw}\x1b[39m`
 const magenta = (raw: string) => `\x1b[35m${raw}\x1b[39m`
 
 function log(message: string) {
@@ -57,9 +59,9 @@ export interface UnpluginPackageOptions {
 
   /**
    * Whether to empty {@link outdir} before bundling,
-   * default to `true`.
+   * default to `false`.
    *
-   * 是否在打包前清空{@link outdir}目录，默认值为`true`。
+   * 是否在打包前清空{@link outdir}目录，默认值为`false`。
    */
   emptyOutdir?: boolean
 
@@ -163,16 +165,19 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
   const root = options?.root ?? cwd()
   const outdir = options?.outdir ?? join(root, "out")
 
-  function emptyOutdir() {
-    if (!(options?.emptyOutdir ?? true)) return
+  // Don't call it when buildStart, or it will be called for each build!
+  ;(function emptyOutdir() {
+    if (!(options?.emptyOutdir ?? false)) return
     if (!existsSync(outdir) || !statSync(outdir).isDirectory()) return
     for (const name of readdirSync(outdir)) {
       rmSync(join(outdir, name), { recursive: true })
+      log(`${dim("removed:")} ${dim(red(name))}`)
     }
-    log(`${dim("outdir emptied:")} ${magenta(relative(root, outdir))}`)
-  }
+    log(`${dim("outdir emptied:")} ${yellow(relative(root, outdir))}`)
+  })()
 
-  function copyFiles() {
+  // Only run once, avoid duplicated run when there are multiple builds.
+  ;(function copyFiles() {
     const copyFiles = options?.copyFiles ?? defaultFilesToCopy
     for (const filename of copyFiles) {
       const src = join(root, filename)
@@ -182,9 +187,10 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
         log(`${dim("copied:")} ${magenta(filename)}`)
       }
     }
-  }
+  })()
 
-  function compileManifest() {
+  // Only run once, avoid duplicated run when there are multiple builds.
+  ;(function compileManifest() {
     if (!(options?.compileManifest ?? true)) return
 
     const compressManifest = options?.compressManifest ?? true
@@ -202,18 +208,9 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
       : JSON.stringify(compiledManifest, null, 2)
     writeFileSync(join(outdir, manifestFilename), result)
     log(`${dim("manifest compiled:")} ${green(manifestFilename)}`)
-  }
+  })()
 
-  return {
-    name: "unplugin-package",
-    buildStart() {
-      emptyOutdir()
-    },
-    buildEnd() {
-      copyFiles()
-      compileManifest()
-    },
-  }
+  return { name: "unplugin-package" }
 })
 
 export default unplugin

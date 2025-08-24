@@ -7,8 +7,8 @@
     "strict": true,
     "skipLibCheck": true,
 
-    "declaration": true,
-    "declarationDir": "out",
+    // Declaration outdir must be specified here,
+    // or unplugin-dts will output to the default dist directory.
     "outDir": "out"
   },
   "include": ["src/index.ts"]
