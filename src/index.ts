@@ -92,52 +92,54 @@ export const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
     log(`${dim("outdir emptied:")} ${magenta(relative(root, outdir))}`)
   }
 
+  function copyFiles() {
+    const copyFiles = options?.copyFiles ?? [
+      "README.md",
+      "LICENSE",
+      "CHANGELOG.md",
+    ]
+    for (const filename of copyFiles) {
+      const src = join(root, filename)
+      const out = join(outdir, filename)
+      if (existsSync(src)) {
+        cpSync(src, out)
+        log(`${dim("copied:")} ${magenta(filename)}`)
+      }
+    }
+  }
+
+  function compileManifest() {
+    if (!(options?.compileManifest ?? true)) return
+
+    const compressManifest = options?.compressManifest ?? true
+    const manifestEncoding = options?.manifestEncoding ?? "utf8"
+    const manifestOverride =
+      options?.manifestOverride ??
+      ((manifest) => {
+        manifest["scripts"] = undefined
+        manifest["devDependencies"] = undefined
+        return manifest
+      })
+
+    const manifestFilename = "package.json"
+    const compiledManifest = manifestOverride(
+      JSON.parse(readFileSync(join(root, manifestFilename), manifestEncoding)),
+    )
+
+    const result = compressManifest
+      ? JSON.stringify(compiledManifest)
+      : JSON.stringify(compiledManifest, null, 2)
+    writeFileSync(join(outdir, manifestFilename), result)
+  }
+
   return {
     name: "unplugin-package",
     buildStart() {
       emptyOutdir()
     },
     buildEnd() {
-      ;(function copyFiles() {
-        const copyFiles = options?.copyFiles ?? [
-          "README.md",
-          "LICENSE",
-          "CHANGELOG.md",
-        ]
-        for (const filename of copyFiles) {
-          const src = join(root, filename)
-          const out = join(outdir, filename)
-          if (existsSync(src)) {
-            cpSync(src, out)
-            log(`${dim("copied:")} ${magenta(filename)}`)
-          }
-        }
-      })()
-      ;(function compileManifest() {
-        if (!(options?.compileManifest ?? true)) return
-
-        const compressManifest = options?.compressManifest ?? true
-        const manifestEncoding = options?.manifestEncoding ?? "utf8"
-        const manifestOverride =
-          options?.manifestOverride ??
-          ((manifest) => {
-            manifest["scripts"] = undefined
-            manifest["devDependencies"] = undefined
-            return manifest
-          })
-
-        const manifestFilename = "package.json"
-        const compiledManifest = manifestOverride(
-          JSON.parse(
-            readFileSync(join(root, manifestFilename), manifestEncoding),
-          ),
-        )
-
-        const result = compressManifest
-          ? JSON.stringify(compiledManifest)
-          : JSON.stringify(compiledManifest, null, 2)
-        writeFileSync(join(outdir, manifestFilename), result)
-      })()
+      copyFiles()
+      compileManifest()
     },
   }
 })
