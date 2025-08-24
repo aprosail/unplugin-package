@@ -7,6 +7,7 @@
     "type": "git",
     "url": "https://github.com/aprosail/unplugin-package.git"
   },
+  "license": "MIT",
   "keywords": [
     "unplugin",
     "bundler",
