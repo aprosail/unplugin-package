@@ -3,9 +3,10 @@
   "description": "Bundler plugins for copying manifest files into output.",
   "version": "1.3.0",
   "type": "module",
+  "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/aprosail/unplugin-package.git"
+    "url": "git+https://github.com/aprosail/unplugin-package.git"
   },
   "license": "MIT",
   "keywords": [
@@ -26,8 +27,7 @@
     "format": "prettier --write .",
     "review": "prettier --check . && oxlint",
     "build": "rolldown --config rolldown.config.ts",
-    "prepublish": "npm run build",
-    "publish": "cd out && npm publish && cd .."
+    "pub": "cd out && npm publish && cd .."
   },
   "dependencies": {
     "unplugin": "^2"

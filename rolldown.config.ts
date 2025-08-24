@@ -1,7 +1,10 @@
 import { join } from "node:path"
 import { defineConfig } from "rolldown"
 import unpluginDts from "unplugin-dts"
-import unpluginPackage, { defaultFilesToCopy } from "./src/index"
+import unpluginPackage, {
+  defaultFilesToCopy,
+  defaultManifestOverride,
+} from "./src/index"
 
 const root = import.meta.dirname
 const outdir = join(root, "out")
@@ -15,6 +18,11 @@ export default defineConfig({
       outdir,
       emptyOutdir: true,
       copyFiles: [...defaultFilesToCopy, "README.zh.md", "LICENSE-mulan"],
+      manifestOverride(raw) {
+        const manifest = defaultManifestOverride(raw)
+        manifest["private"] = undefined
+        return manifest
+      },
     }),
   ],
   external(id, _parentId, isResolved) {
