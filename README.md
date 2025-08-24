@@ -10,56 +10,17 @@ or bundling extension packs such as VSCode extensions.
 
 Only support ESModule (esm) package, CommonJS is not supported.
 
-<!-- vite -->
-<details>
-  <summary>Vite</summary>
-
-In `vite.config.ts`:
-
 ```ts
-import { defineConfig } from "vite"
 import unpluginPackage from "unplugin-package"
 
-export default defineConfig({
-  plugins: [unpluginPackage.vite()],
-})
+unpluginPackage.vite() // as vite plugin.
+unpluginPackage.rollup() // as rollup plugin.
+unpluginPackage.rolldown() // as rolldown plugin.
+unpluginPackage.webpack() // as webpack plugin.
+unpluginPackage.rspack() // as rspack plugin.
+unpluginPackage.esbuild() // as esbuild plugin.
+unpluginPackage.farm() // as farm plugin.
 ```
-
-</details>
-
-<!-- rollup -->
-<details>
-  <summary>Rollup</summary>
-
-In `rollup.config.js`:
-
-```js
-import { defineConfig } from "rollup"
-import unpluginPackage from "unplugin-package"
-
-export default defineConfig({
-  plugins: [unpluginPackage.rollup()],
-})
-```
-
-</details>
-
-<!-- rolldown -->
-<details>
-  <summary>Rolldown</summary>
-
-In `rolldown.config.ts`:
-
-```ts
-import { defineConfig } from "rolldown"
-import unpluginPackage from "unplugin-package"
-
-export default defineConfig({
-  plugins: [unpluginPackage.rolldown()],
-})
-```
-
-</details>
 
 ## License
 
