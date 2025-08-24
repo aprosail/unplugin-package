@@ -7,6 +7,13 @@
     "type": "git",
     "url": "https://github.com/aprosail/unplugin-package.git"
   },
+  "keywords": [
+    "unplugin",
+    "bundler",
+    "build-script",
+    "publish",
+    "pack"
+  ],
   "exports": {
     ".": {
       "import": "./out/index.js",
