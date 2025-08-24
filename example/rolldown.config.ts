@@ -1,6 +1,9 @@
 import { join } from "node:path"
 import { defineConfig } from "rolldown"
-import unpluginPackage from "unplugin-package"
+import unpluginPackage, {
+  defaultFilesToCopy,
+  defaultManifestOverride,
+} from "unplugin-package"
 
 const root = import.meta.dirname
 const outdir = join(root, "out")
@@ -10,10 +13,10 @@ export default defineConfig({
     unpluginPackage.rolldown({
       root,
       outdir,
-      manifestOverride: (manifest) => {
+      copyFiles: [...defaultFilesToCopy, "README.de.md"],
+      manifestOverride: (raw) => {
+        const manifest = defaultManifestOverride(raw)
         manifest["type"] = undefined
-        manifest["scripts"] = undefined
-        manifest["devDependencies"] = undefined
         manifest["main"] = "example.js"
         return manifest
       },

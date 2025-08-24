@@ -1,6 +1,7 @@
 ## 1.3.0
 
 - Log about compile manifest.
+- Export default values to help configurations.
 
 ## 1.2.1 (2025-08-24)
 

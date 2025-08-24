@@ -71,7 +71,7 @@ export interface UnpluginPackageOptions {
    * 2. When a file not exist, it will be skipped.
    * 3. All paths here are case-sensitive.
    * 4. Directories and symbolic links are also supported.
-   * 5. The default value is `["README.md", "LICENSE", "CHANGELOG.md"]`.
+   * 5. The default value is {@link defaultFilesToCopy}.
    *
    * 需要复制的文件列表，这些文件将从{@link root}被复制到{@link outdir}。
    *
@@ -79,7 +79,7 @@ export interface UnpluginPackageOptions {
    * 2. 当文件不存在时，直接跳过，不会报错，也不会输出。
    * 3. 所有路径都大小写敏感。
    * 4. 支持复制目录和符号链接。
-   * 5. 默认值为`["README.md", "LICENSE", "CHANGELOG.md"]`。
+   * 5. 默认值见{@link defaultFilesToCopy}。
    */
   copyFiles?: string[]
 
@@ -106,10 +106,12 @@ export interface UnpluginPackageOptions {
   /**
    * Override the manifest file (`package.json`)
    * with the given options.
-   * By default, it will remove the `scripts` and `devDependencies` field.
+   * By default, it will remove the `scripts` and `devDependencies` field,
+   * see {@link defaultManifestOverride}.
    *
    * 可通过配置{@link manifestOverride}来自定义处理逻辑。
-   * 默认会移除`scripts`和`devDependencies`字段。
+   * 默认会移除`scripts`和`devDependencies`字段，
+   * 详见{@link defaultManifestOverride}。
    */
   manifestOverride?: (raw: Record<string, unknown>) => Record<string, unknown>
 
@@ -120,6 +122,24 @@ export interface UnpluginPackageOptions {
    * 解析`package.json`时所用的编码，默认为`utf8`。
    */
   manifestEncoding?: BufferEncoding
+}
+
+export const defaultFilesToCopy = ["README.md", "LICENSE", "CHANGELOG.md"]
+
+/**
+ * By default, it will remove the `"script"` and `"devDependencies"` field.
+ * Because they are not necessary for the output pack of an NPM package.
+ *
+ * 默认会移除`"scripts"`和`"devDependencies"`字段，
+ * 因为这部分内容没必要存在于输出的NPM包中。
+ *
+ * @param manifest the original manifest object parsed from `package.json`.
+ * @returns the processed object to write into output `package.json`.
+ */
+export const defaultManifestOverride = (manifest: Record<string, unknown>) => {
+  manifest["scripts"] = undefined
+  manifest["devDependencies"] = undefined
+  return manifest
 }
 
 /**
@@ -153,11 +173,7 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
   }
 
   function copyFiles() {
-    const copyFiles = options?.copyFiles ?? [
-      "README.md",
-      "LICENSE",
-      "CHANGELOG.md",
-    ]
+    const copyFiles = options?.copyFiles ?? defaultFilesToCopy
     for (const filename of copyFiles) {
       const src = join(root, filename)
       const out = join(outdir, filename)
@@ -174,12 +190,7 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
     const compressManifest = options?.compressManifest ?? true
     const manifestEncoding = options?.manifestEncoding ?? "utf8"
     const manifestOverride =
-      options?.manifestOverride ??
-      ((manifest) => {
-        manifest["scripts"] = undefined
-        manifest["devDependencies"] = undefined
-        return manifest
-      })
+      options?.manifestOverride ?? defaultManifestOverride
 
     const manifestFilename = "package.json"
     const compiledManifest = manifestOverride(
