@@ -1,5 +1,13 @@
-import { cpSync, existsSync, readFileSync, writeFileSync } from "node:fs"
-import { join } from "node:path"
+import {
+  cpSync,
+  existsSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs"
+import { join, relative } from "node:path"
 import { cwd } from "node:process"
 import { createUnplugin } from "unplugin"
 
@@ -25,6 +33,12 @@ export interface UnpluginPackageOptions {
    * `out` directory inside the {@link root} directory by default.
    */
   outdir?: string
+
+  /**
+   * Whether to empty {@link outdir} before bundling,
+   * default to `true`.
+   */
+  emptyOutdir?: boolean
 
   /**
    * Those files will be copied from the {@link root} directory
@@ -70,6 +84,16 @@ export const unplugin = createUnplugin((options?: UnpluginPackageOptions) => ({
   buildEnd() {
     const root = options?.root ?? cwd()
     const outdir = options?.outdir ?? join(root, "out")
+
+    // Empty outdir.
+    ;(function emptyOutdir() {
+      if (!(options?.emptyOutdir ?? true)) return
+      if (!existsSync(outdir) || !statSync(outdir).isDirectory()) return
+      for (const name of readdirSync(outdir)) {
+        rmSync(join(outdir, name), { recursive: true })
+      }
+      log(`${dim("outdir emptied:")} ${magenta(relative(root, outdir))}`)
+    })()
 
     // Copy files.
     ;(function copyFiles() {
