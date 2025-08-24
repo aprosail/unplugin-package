@@ -25,4 +25,4 @@ unpluginPackage.farm() // 作为farm插件使用
 
 ## 开源协议
 
-本库以MIT协议开源。
+本库以[MIT许可证](./LICENSE)或[木兰宽松许可证](./LICENSE-mulan)开源。

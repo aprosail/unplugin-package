@@ -13,13 +13,21 @@
   "explorer.fileNesting.patterns": {
     "*.js": "",
     "package.json": "pnpm-lock.yaml",
-    "readme.md": "license"
+    "readme.md": "license",
+    "readme.zh.md": "license-mulan"
+  },
+
+  "files.associations": {
+    "license": "plaintext",
+    "license-*": "plaintext"
   },
 
   // Code spell checker (require recommended extensions).
   "cSpell.ignorePaths": ["node_modules", "out", "LICENSE"],
   "cSpell.words": [
+    "aprosail",
     "esbenp",
+    "mulan",
     "nodenext",
     "oxlint",
     "oxlintrc",
