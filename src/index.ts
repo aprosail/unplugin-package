@@ -40,17 +40,18 @@ export interface UnpluginPackageOptions {
   copyFiles?: string[]
 }
 
-export const unplugin = createUnplugin((options: UnpluginPackageOptions) => ({
+export const unplugin = createUnplugin((options?: UnpluginPackageOptions) => ({
   name: "unplugin-package",
   buildEnd() {
-    const root = options.root ?? cwd()
-    const outdir = options.outdir ?? join(root, "out")
-    const copyFiles = options.copyFiles ?? [
+    const root = options?.root ?? cwd()
+    const outdir = options?.outdir ?? join(root, "out")
+    const copyFiles = options?.copyFiles ?? [
       "README.md",
       "LICENSE",
       "CHANGELOG.md",
     ]
 
+    // Copy files.
     for (const filename of copyFiles) {
       const src = join(root, filename)
       const out = join(outdir, filename)
@@ -62,6 +63,7 @@ export const unplugin = createUnplugin((options: UnpluginPackageOptions) => ({
   },
 }))
 
+export default unplugin
 export const vite = unplugin.vite
 export const rollup = unplugin.rollup
 export const rolldown = unplugin.rolldown

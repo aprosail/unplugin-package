@@ -16,7 +16,8 @@
   "scripts": {
     "format": "prettier --write .",
     "review": "prettier --check . && oxlint",
-    "build": "tsc --project tsconfig.json"
+    "build": "tsc --project tsconfig.json",
+    "build:example": "cd example && pnpm build && cd .."
   },
   "dependencies": {
     "unplugin": "^2"
@@ -26,8 +27,6 @@
     "oxlint": "^1",
     "prettier": "^3",
     "prettier-plugin-sh": "^0.18.0",
-    "rolldown": "^1.0.0-beta.33",
-    "typescript": "^5",
-    "unplugin-dts": "^1.0.0-beta.6"
+    "typescript": "^5"
   }
 }
