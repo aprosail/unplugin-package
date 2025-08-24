@@ -1,5 +1,8 @@
 # Unplugin Package
 
+[English](./README.md) |
+[中文简体](./README.zh.md)
+
 Bundler plugins for copying manifest files into output.
 This plugin can help you to copy only necessary files into
 the output directory, and override some fields of `package.json` in the output.

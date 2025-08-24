@@ -1,5 +1,8 @@
 # Unplugin Package
 
+[English](./README.md) |
+[中文简体](./README.zh.md)
+
 用于将静态资源文件从根目录复制到输出目录的通用插件([unplugin](https://unplugin.unjs.io/))，常用于打包和发布NPM库时将所有需要打包的内容输出到Git忽略的输出目录，以避免复杂的`.npmignore`等配置的使用场景，也适合用于精简VSCode等扩展的打包体积。
 
 ## 使用方法
