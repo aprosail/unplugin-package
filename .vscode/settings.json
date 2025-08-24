@@ -17,6 +17,9 @@
     "readme.zh.md": "license-mulan"
   },
 
+  // Special files display.
+  "editor.wordWrapColumn": 80,
+  "[javascript]": { "editor.wordWrap": "wordWrapColumn" },
   "files.associations": {
     "license": "plaintext",
     "license-*": "plaintext"

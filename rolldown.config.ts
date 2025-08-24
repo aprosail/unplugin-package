@@ -1,5 +1,5 @@
 import { join } from "node:path"
-import { defineConfig } from "rolldown"
+import { defineConfig, OutputOptions } from "rolldown"
 import unpluginDts from "unplugin-dts"
 import unpluginPackage, {
   defaultFilesToCopy,
@@ -8,6 +8,10 @@ import unpluginPackage, {
 
 const root = import.meta.dirname
 const outdir = join(root, "out")
+const buildCommon: OutputOptions = {
+  exports: "named",
+  minify: true,
+}
 
 export default defineConfig({
   plugins: [
@@ -32,7 +36,7 @@ export default defineConfig({
   },
   input: join(root, "src", "index.ts"),
   output: [
-    { file: join(outdir, "index.js"), format: "esm", exports: "named" },
-    { file: join(outdir, "index.cjs"), format: "commonjs", exports: "named" },
+    { file: join(outdir, "index.js"), format: "esm", ...buildCommon },
+    { file: join(outdir, "index.cjs"), format: "commonjs", ...buildCommon },
   ],
 })

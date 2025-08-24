@@ -25,18 +25,8 @@ import {
 import { join, relative } from "node:path"
 import { cwd } from "node:process"
 import { createUnplugin } from "unplugin"
-
-const name = "unplugin-package"
-const dim = (raw: string) => `\x1b[2m${raw}\x1b[22m`
-const red = (raw: string) => `\x1b[31m${raw}\x1b[39m`
-const green = (raw: string) => `\x1b[32m${raw}\x1b[39m`
-const yellow = (raw: string) => `\x1b[33m${raw}\x1b[39m`
-const magenta = (raw: string) => `\x1b[35m${raw}\x1b[39m`
-
-function log(message: string) {
-  // oxlint-disable-next-line no-console
-  console.log(`${dim(`[${name}]`)} ${message}`)
-}
+import { dim, green, log, magenta, red, yellow } from "./command-line.ts"
+import { name } from "./manifest.ts"
 
 export interface UnpluginPackageOptions {
   /**
@@ -210,7 +200,7 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
     log(`${dim("manifest compiled:")} ${green(manifestFilename)}`)
   })()
 
-  return { name: "unplugin-package" }
+  return { name }
 })
 
 export default unplugin
