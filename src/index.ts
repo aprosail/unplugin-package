@@ -1,4 +1,4 @@
-import { cpSync, existsSync } from "node:fs"
+import { cpSync, existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { cwd } from "node:process"
 import { createUnplugin } from "unplugin"
@@ -38,6 +38,31 @@ export interface UnpluginPackageOptions {
    *
    */
   copyFiles?: string[]
+
+  /**
+   * Whether to compile the manifest file (`package.json`)
+   * from {@link root} to {@link outdir}, default to `true`.
+   */
+  compileManifest?: boolean
+
+  /**
+   * Whether to avoid unnecessary whitespaces during the compilation
+   * process of the manifest file (`package.json`), default to `true`.
+   */
+  compressManifest?: boolean
+
+  /**
+   * Override the manifest file (`package.json`)
+   * with the given options.
+   * By default, it will remove the `scripts` and `devDependencies` field.
+   */
+  manifestOverride?: (raw: Record<string, unknown>) => Record<string, unknown>
+
+  /**
+   * Encoding of the manifest file, for Json parsing,
+   * default to `utf8`.
+   */
+  manifestEncoding?: BufferEncoding
 }
 
 export const unplugin = createUnplugin((options?: UnpluginPackageOptions) => ({
@@ -45,13 +70,13 @@ export const unplugin = createUnplugin((options?: UnpluginPackageOptions) => ({
   buildEnd() {
     const root = options?.root ?? cwd()
     const outdir = options?.outdir ?? join(root, "out")
+
+    // Copy files.
     const copyFiles = options?.copyFiles ?? [
       "README.md",
       "LICENSE",
       "CHANGELOG.md",
     ]
-
-    // Copy files.
     for (const filename of copyFiles) {
       const src = join(root, filename)
       const out = join(outdir, filename)
@@ -59,6 +84,29 @@ export const unplugin = createUnplugin((options?: UnpluginPackageOptions) => ({
         cpSync(src, out)
         log(`${dim("copied:")} ${magenta(filename)}`)
       }
+    }
+
+    // Compile manifest.
+    if (options?.compileManifest ?? true) {
+      const compressManifest = options?.compressManifest ?? true
+      const manifestEncoding = options?.manifestEncoding ?? "utf8"
+      const manifestOverride =
+        options?.manifestOverride ??
+        ((manifest) => {
+          manifest["scripts"] = undefined
+          manifest["devDependencies"] = undefined
+          return manifest
+        })
+      const manifestFilename = "package.json"
+      const compiledManifest = manifestOverride(
+        JSON.parse(
+          readFileSync(join(root, manifestFilename), manifestEncoding),
+        ),
+      )
+      const result = compressManifest
+        ? JSON.stringify(compiledManifest)
+        : JSON.stringify(compiledManifest, null, 2)
+      writeFileSync(join(outdir, manifestFilename), result)
     }
   },
 }))

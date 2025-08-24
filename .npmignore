@@ -4,5 +4,6 @@
 .oxlintrc.json
 .prettierignore
 .prettierrc.yaml
+example
 src
 tsconfig.json
