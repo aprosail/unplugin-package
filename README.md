@@ -8,7 +8,12 @@ or bundling extension packs such as VSCode extensions.
 
 ## Usages
 
-Only support ESModule (esm) package, CommonJS is not supported.
+1. Only support ESModule (esm) package, CommonJS is not supported.
+2. Read corresponding comment documentation for more details.
+   This package is very simple, it's recommended to read the source code.
+3. You may refer to the
+   [`example`](https://github.com/aprosail/unplugin-package/tree/main/example)
+   directory for more details.
 
 ```ts
 import unpluginPackage from "unplugin-package"
