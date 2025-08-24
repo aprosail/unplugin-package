@@ -106,7 +106,24 @@ export interface UnpluginPackageOptions {
   manifestEncoding?: BufferEncoding
 }
 
-export const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
+/**
+ * Unplugin entrypoint, where you can call plugin for current bundler.
+ *
+ * 在此变量后面点(.)加当前使用的打包工具，即输出对应的插件函数。
+ *
+ * ```ts
+ * import unpluginPackage from "unplugin-package"
+ *
+ * unpluginPackage.vite() // as vite plugin.
+ * unpluginPackage.rollup() // as rollup plugin.
+ * unpluginPackage.rolldown() // as rolldown plugin.
+ * unpluginPackage.webpack() // as webpack plugin.
+ * unpluginPackage.rspack() // as rspack plugin.
+ * unpluginPackage.esbuild() // as esbuild plugin.
+ * unpluginPackage.farm() // as farm plugin.
+ * ```
+ */
+const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
   const root = options?.root ?? cwd()
   const outdir = options?.outdir ?? join(root, "out")
 
