@@ -28,6 +28,7 @@ import { createUnplugin } from "unplugin"
 
 const name = "unplugin-package"
 const dim = (raw: string) => `\x1b[2m${raw}\x1b[22m`
+const green = (raw: string) => `\x1b[32m${raw}\x1b[39m`
 const magenta = (raw: string) => `\x1b[35m${raw}\x1b[39m`
 
 function log(message: string) {
@@ -189,6 +190,7 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
       ? JSON.stringify(compiledManifest)
       : JSON.stringify(compiledManifest, null, 2)
     writeFileSync(join(outdir, manifestFilename), result)
+    log(`${dim("manifest compiled:")} ${green(manifestFilename)}`)
   }
 
   return {

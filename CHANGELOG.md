@@ -1,3 +1,7 @@
+## 1.3.0
+
+- Log about compile manifest.
+
 ## 1.2.1 (2025-08-24)
 
 - Allow dual-license of MIT or Mulan-PSL 2.0.
