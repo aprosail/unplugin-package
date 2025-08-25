@@ -19,4 +19,4 @@ jobs:
         run: npm install -g npm@latest
       - run: npm run review
       - run: npm run build
-      - run: npm publish
+      - run: npm run pub

@@ -7,10 +7,6 @@
 
 ## 使用方法
 
-1. 此库仅支持ESModule(esm)，不支持CommonJS(cjs)。
-2. 具体配置直接读相关文档注释。本库很简单，推荐直接读源码。
-3. 可参考[`example`](./example)目录下的例子。
-
 ```ts
 import unpluginPackage from "unplugin-package"
 
@@ -21,6 +17,28 @@ unpluginPackage.webpack() // 作为webpack插件使用
 unpluginPackage.rspack() // 作为rspack插件使用
 unpluginPackage.esbuild() // 作为esbuild插件使用
 unpluginPackage.farm() // 作为farm插件使用
+```
+
+## 举例说明
+
+```ts
+import { join } from "node:path"
+
+const root = import.meta.dirname
+const outdir = join(root, "out")
+
+// 将这里的xxx替换为具体的bundler名称，如vite、rollup、rolldown等。
+unpluginPackage.xxx({
+  root,
+  outdir,
+  emptyOutdir: true,
+  copyFiles: [...defaultFilesToCopy, "addition-file", "not-exist-file"],
+  manifestOverride(raw) {
+    const manifest = defaultManifestOverride(raw)
+    manifest["homepage"] = "https://yourproject.example.com/xxx"
+    return manifest
+  },
+})
 ```
 
 ## 开源协议

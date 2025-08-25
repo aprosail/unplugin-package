@@ -11,11 +11,6 @@ or bundling extension packs such as VSCode extensions.
 
 ## Usages
 
-1. Only support ESModule (esm) package, CommonJS is not supported.
-2. Read corresponding comment documentation for more details.
-   This package is very simple, it's recommended to read the source code.
-3. You may refer to the [`example`](./example) directory for more details.
-
 ```ts
 import unpluginPackage from "unplugin-package"
 
@@ -26,6 +21,28 @@ unpluginPackage.webpack() // as webpack plugin.
 unpluginPackage.rspack() // as rspack plugin.
 unpluginPackage.esbuild() // as esbuild plugin.
 unpluginPackage.farm() // as farm plugin.
+```
+
+## Example
+
+```ts
+import { join } from "node:path"
+
+const root = import.meta.dirname
+const outdir = join(root, "out")
+
+// Use the current bundler flavor of the plugin.
+unpluginPackage.xxx({
+  root,
+  outdir,
+  emptyOutdir: true,
+  copyFiles: [...defaultFilesToCopy, "addition-file", "not-exist-file"],
+  manifestOverride(raw) {
+    const manifest = defaultManifestOverride(raw)
+    manifest["homepage"] = "https://yourproject.example.com/xxx"
+    return manifest
+  },
+})
 ```
 
 ## License

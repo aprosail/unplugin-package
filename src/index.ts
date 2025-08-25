@@ -25,15 +25,8 @@ import {
 import { join, relative } from "node:path"
 import { cwd } from "node:process"
 import { createUnplugin } from "unplugin"
-
-const name = "unplugin-package"
-const dim = (raw: string) => `\x1b[2m${raw}\x1b[22m`
-const magenta = (raw: string) => `\x1b[35m${raw}\x1b[39m`
-
-function log(message: string) {
-  // oxlint-disable-next-line no-console
-  console.log(`${dim(`[${name}]`)} ${message}`)
-}
+import { dim, green, log, magenta, red, yellow } from "./command-line.ts"
+import { name } from "./manifest.ts"
 
 export interface UnpluginPackageOptions {
   /**
@@ -56,9 +49,9 @@ export interface UnpluginPackageOptions {
 
   /**
    * Whether to empty {@link outdir} before bundling,
-   * default to `true`.
+   * default to `false`.
    *
-   * 是否在打包前清空{@link outdir}目录，默认值为`true`。
+   * 是否在打包前清空{@link outdir}目录，默认值为`false`。
    */
   emptyOutdir?: boolean
 
@@ -70,7 +63,7 @@ export interface UnpluginPackageOptions {
    * 2. When a file not exist, it will be skipped.
    * 3. All paths here are case-sensitive.
    * 4. Directories and symbolic links are also supported.
-   * 5. The default value is `["README.md", "LICENSE", "CHANGELOG.md"]`.
+   * 5. The default value is {@link defaultFilesToCopy}.
    *
    * 需要复制的文件列表，这些文件将从{@link root}被复制到{@link outdir}。
    *
@@ -78,7 +71,7 @@ export interface UnpluginPackageOptions {
    * 2. 当文件不存在时，直接跳过，不会报错，也不会输出。
    * 3. 所有路径都大小写敏感。
    * 4. 支持复制目录和符号链接。
-   * 5. 默认值为`["README.md", "LICENSE", "CHANGELOG.md"]`。
+   * 5. 默认值见{@link defaultFilesToCopy}。
    */
   copyFiles?: string[]
 
@@ -105,10 +98,12 @@ export interface UnpluginPackageOptions {
   /**
    * Override the manifest file (`package.json`)
    * with the given options.
-   * By default, it will remove the `scripts` and `devDependencies` field.
+   * By default, it will remove the `scripts` and `devDependencies` field,
+   * see {@link defaultManifestOverride}.
    *
    * 可通过配置{@link manifestOverride}来自定义处理逻辑。
-   * 默认会移除`scripts`和`devDependencies`字段。
+   * 默认会移除`scripts`和`devDependencies`字段，
+   * 详见{@link defaultManifestOverride}。
    */
   manifestOverride?: (raw: Record<string, unknown>) => Record<string, unknown>
 
@@ -119,6 +114,24 @@ export interface UnpluginPackageOptions {
    * 解析`package.json`时所用的编码，默认为`utf8`。
    */
   manifestEncoding?: BufferEncoding
+}
+
+export const defaultFilesToCopy = ["README.md", "LICENSE", "CHANGELOG.md"]
+
+/**
+ * By default, it will remove the `"script"` and `"devDependencies"` field.
+ * Because they are not necessary for the output pack of an NPM package.
+ *
+ * 默认会移除`"scripts"`和`"devDependencies"`字段，
+ * 因为这部分内容没必要存在于输出的NPM包中。
+ *
+ * @param manifest the original manifest object parsed from `package.json`.
+ * @returns the processed object to write into output `package.json`.
+ */
+export const defaultManifestOverride = (manifest: Record<string, unknown>) => {
+  manifest["scripts"] = undefined
+  manifest["devDependencies"] = undefined
+  return manifest
 }
 
 /**
@@ -142,21 +155,20 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
   const root = options?.root ?? cwd()
   const outdir = options?.outdir ?? join(root, "out")
 
-  function emptyOutdir() {
-    if (!(options?.emptyOutdir ?? true)) return
+  // Don't call it when buildStart, or it will be called for each build!
+  ;(function emptyOutdir() {
+    if (!(options?.emptyOutdir ?? false)) return
     if (!existsSync(outdir) || !statSync(outdir).isDirectory()) return
     for (const name of readdirSync(outdir)) {
       rmSync(join(outdir, name), { recursive: true })
+      log(`${dim("removed:")} ${dim(red(name))}`)
     }
-    log(`${dim("outdir emptied:")} ${magenta(relative(root, outdir))}`)
-  }
+    log(`${dim("outdir emptied:")} ${yellow(relative(root, outdir))}`)
+  })()
 
-  function copyFiles() {
-    const copyFiles = options?.copyFiles ?? [
-      "README.md",
-      "LICENSE",
-      "CHANGELOG.md",
-    ]
+  // Only run once, avoid duplicated run when there are multiple builds.
+  ;(function copyFiles() {
+    const copyFiles = options?.copyFiles ?? defaultFilesToCopy
     for (const filename of copyFiles) {
       const src = join(root, filename)
       const out = join(outdir, filename)
@@ -165,20 +177,16 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
         log(`${dim("copied:")} ${magenta(filename)}`)
       }
     }
-  }
+  })()
 
-  function compileManifest() {
+  // Only run once, avoid duplicated run when there are multiple builds.
+  ;(function compileManifest() {
     if (!(options?.compileManifest ?? true)) return
 
     const compressManifest = options?.compressManifest ?? true
     const manifestEncoding = options?.manifestEncoding ?? "utf8"
     const manifestOverride =
-      options?.manifestOverride ??
-      ((manifest) => {
-        manifest["scripts"] = undefined
-        manifest["devDependencies"] = undefined
-        return manifest
-      })
+      options?.manifestOverride ?? defaultManifestOverride
 
     const manifestFilename = "package.json"
     const compiledManifest = manifestOverride(
@@ -189,18 +197,10 @@ const unplugin = createUnplugin((options?: UnpluginPackageOptions) => {
       ? JSON.stringify(compiledManifest)
       : JSON.stringify(compiledManifest, null, 2)
     writeFileSync(join(outdir, manifestFilename), result)
-  }
+    log(`${dim("manifest compiled:")} ${green(manifestFilename)}`)
+  })()
 
-  return {
-    name: "unplugin-package",
-    buildStart() {
-      emptyOutdir()
-    },
-    buildEnd() {
-      copyFiles()
-      compileManifest()
-    },
-  }
+  return { name }
 })
 
 export default unplugin

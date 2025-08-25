@@ -4,12 +4,15 @@
     "target": "esnext",
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
     "strict": true,
     "skipLibCheck": true,
 
+    // Declaration outdir must be specified here,
+    // or unplugin-dts will output to the default dist directory.
+    "outDir": "out",
     "declaration": true,
-    "declarationDir": "out",
-    "outDir": "out"
+    "emitDeclarationOnly": true
   },
   "include": ["src/index.ts"]
 }

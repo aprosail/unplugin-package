@@ -1,3 +1,11 @@
+## 1.3.0 (2025-08-25)
+
+- Export default values to help configurations.
+- Log about compile manifest and empty outdir.
+- Fix duplicated process when there're multiple builds.
+- Remove unnecessary example and build with itself.
+- Optimize bundler size and support CommonJS.
+
 ## 1.2.1 (2025-08-24)
 
 - Allow dual-license of MIT or Mulan-PSL 2.0.
