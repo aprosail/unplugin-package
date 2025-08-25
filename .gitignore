@@ -9,3 +9,6 @@ Desktop.ini
 # Node.
 node_modules
 out
+
+# Generated current changelog for release.
+.changelog

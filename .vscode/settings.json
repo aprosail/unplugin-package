@@ -34,6 +34,7 @@
     "nodenext",
     "oxlint",
     "oxlintrc",
+    "releaselog",
     "rolldown",
     "rspack",
     "unplugin"
