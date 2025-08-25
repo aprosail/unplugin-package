@@ -15,8 +15,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: { registry-url: "https://registry.npmjs.org" }
 
-      - name: Ensure npm >= 11.5.1 installed.
-        run: npm install -g npm@latest
       - run: npm run review
       - run: npm run build
       - run: npm run pub
