@@ -1,7 +1,13 @@
-name: review
+name: release
 
 on:
-  pull_request: { branches: ["main"] }
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+permissions:
+  contents: write
 
 jobs:
   review:
@@ -12,4 +18,10 @@ jobs:
       - run: npm install
       - run: npm run review
       - run: npm run build
-      - run: npx releaselog -f notes v1.0.0 > .changelog
+
+      - run: npx releaselog -f notes ${{ github.ref_name }} > .changelog
+      - env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: >-
+          gh release create ${{ github.ref_name }}
+          --title ${{ github.ref_name }}
+          --notes-file .changelog
