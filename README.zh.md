@@ -7,10 +7,6 @@
 
 ## 使用方法
 
-1. 此库仅支持ESModule(esm)，不支持CommonJS(cjs)。
-2. 具体配置直接读相关文档注释。本库很简单，推荐直接读源码。
-3. 可参考[`example`](./example)目录下的例子。
-
 ```ts
 import unpluginPackage from "unplugin-package"
 
