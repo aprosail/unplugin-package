@@ -10,7 +10,7 @@ importers:
     dependencies:
       unplugin:
         specifier: ^2
-        version: 2.3.8
+        version: 2.3.10
     devDependencies:
       '@microsoft/api-extractor':
         specifier: ^7.52.11
@@ -36,12 +36,6 @@ importers:
       unplugin-dts:
         specifier: ^1.0.0-beta.6
         version: 1.0.0-beta.6(@microsoft/api-extractor@7.52.11(@types/node@24.3.0))(rolldown@1.0.0-beta.33)(typescript@5.9.2)
-
-  example:
-    devDependencies:
-      unplugin-package:
-        specifier: link:..
-        version: link:..
 
 packages:
 
@@ -580,8 +574,8 @@ packages:
       webpack:
         optional: true
 
-  unplugin@2.3.8:
-    resolution: {integrity: sha512-lkaSIlxceytPyt9yfb1h7L9jDFqwMqvUZeGsKB7Z8QrvAO3xZv2S+xMQQYzxk0AGJHcQhbcvhKEstrMy99jnuQ==}
+  unplugin@2.3.10:
+    resolution: {integrity: sha512-6NCPkv1ClwH+/BGE9QeoTIl09nuiAt0gS28nn1PvYXsGKRwM2TCbFA2QiilmehPDTXIe684k4rZI1yl3A1PCUw==}
     engines: {node: '>=18.12.0'}
 
   uri-js@4.4.1:
@@ -1086,14 +1080,14 @@ snapshots:
       local-pkg: 1.1.2
       magic-string: 0.30.18
       typescript: 5.9.2
-      unplugin: 2.3.8
+      unplugin: 2.3.10
     optionalDependencies:
       '@microsoft/api-extractor': 7.52.11(@types/node@24.3.0)
       rolldown: 1.0.0-beta.33
     transitivePeerDependencies:
       - supports-color
 
-  unplugin@2.3.8:
+  unplugin@2.3.10:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       acorn: 8.15.0
