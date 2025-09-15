@@ -33,7 +33,7 @@
     "unplugin": "^2"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.52.11",
+    "@microsoft/api-extractor": "^7.52.13",
     "@types/node": "^24",
     "oxlint": "^1",
     "prettier": "^3",
